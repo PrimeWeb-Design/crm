@@ -167,7 +167,7 @@
   <div class="stat-card"><div class="stat-val" id="s-potenzial" style="color:#da77f2">0 â‚¬</div><div class="stat-lbl">Potenzial</div></div>
   <div class="stat-card"><div class="stat-val" id="s-umsatz" style="color:#69db7c">0 â‚¬</div><div class="stat-lbl">Umsatz erzielt</div></div>
   <div class="stat-card"><div class="stat-val" id="s-overdue" style="color:#ff8787">0</div><div class="stat-lbl">â° ÃœberfÃ¤llig</div></div>
-  <div class="stat-card"><div class="stat-val" id="s-mitemail" style="color:#74c0fc">0</div><div class="stat-lbl">í ½í³§ Mit E-Mail</div></div>
+  <div class="stat-card"><div class="stat-val" id="s-mitemail" style="color:#74c0fc">0</div><div class="stat-lbl">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Mit E-Mail</div></div>
 </div>
 
 <!-- TOOLBAR -->
@@ -224,8 +224,8 @@
         <div class="form-field"><label class="form-label">Branche</label><input class="form-input" id="f-branche" placeholder="z.B. Elektriker"></div>
         <div class="form-field"><label class="form-label">Telefon</label><input class="form-input" id="f-tel" placeholder="0xxxx xxxxxx"></div>
         <div class="form-field" style="grid-column:1/-1"><label class="form-label">Website URL</label><input class="form-input" id="f-website" placeholder="https://..."></div>
-        <div class="form-field" style="grid-column:1/-1"><label class="form-label">í ½í³§ E-Mail</label><input class="form-input" id="f-email" placeholder="info@firma.de" type="email"></div>
-        <div class="form-field"><label class="form-label">í ½í³… Folgetermin</label><input class="form-input" id="f-followup" type="date"></div>
+        <div class="form-field" style="grid-column:1/-1"><label class="form-label">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ E-Mail</label><input class="form-input" id="f-email" placeholder="info@firma.de" type="email"></div>
+        <div class="form-field"><label class="form-label">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Folgetermin</label><input class="form-input" id="f-followup" type="date"></div>
         <div class="form-field"><label class="form-label">PrioritÃ¤t</label>
           <select class="form-input" id="f-prio"><option>HOCH</option><option>MITTEL</option><option>NIEDRIG</option></select></div>
         <div class="form-field"><label class="form-label">Status</label>
@@ -239,14 +239,14 @@
       <div class="form-field"><label class="form-label">Notiz</label><textarea class="form-input" id="f-notiz" placeholder="Interne Notizen, nÃ¤chster Schrittâ€¦"></textarea></div>
       <div class="form-actions">
         <button class="btn-danger" id="btn-delete" onclick="deleteCurrent()" style="display:none">ğŸ—‘ï¸ LÃ¶schen</button>
-        <button class="btn-tool" id="btn-email" onclick="generateEmail()" style="display:none">í ½í³§ E-Mail Vorlage</button>
+        <button class="btn-tool" id="btn-email" onclick="generateEmail()" style="display:none">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ E-Mail Vorlage</button>
         <button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
         <button class="btn-save" onclick="saveCurrent()">ğŸ’¾ Speichern</button>
       </div>
       <!-- AKTIVITAETSLOG -->
       <div class="history-section" id="history-section" style="display:none;">
         <div class="history-header">
-          <span class="history-title">í ½í³‹ AktivitÃ¤tslog</span>
+          <span class="history-title">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ AktivitÃ¤tslog</span>
           <button class="mini-btn" onclick="toggleHistoryAdd()">+ Eintrag</button>
         </div>
         <div class="history-list" id="history-list"></div>
@@ -263,7 +263,7 @@
 <div id="email-overlay" onclick="closeEmailModal()">
   <div id="email-modal" onclick="event.stopPropagation()">
     <div class="modal-head">
-      <span id="emailModalTitle">í ½í³§ E-Mail Vorlage</span>
+      <span id="emailModalTitle">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ E-Mail Vorlage</span>
       <button class="modal-close" onclick="closeEmailModal()">âœ•</button>
     </div>
     <div class="modal-body">
@@ -271,7 +271,7 @@
       <textarea id="email-text"></textarea>
       <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end;">
         <button class="btn-cancel" onclick="closeEmailModal()">SchlieÃŸen</button>
-        <button class="btn-save" onclick="copyEmail()">í ½í³‹ Kopieren</button>
+        <button class="btn-save" onclick="copyEmail()">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Kopieren</button>
       </div>
     </div>
   </div>
