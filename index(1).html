@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrimeWeb Design – CRM Lead Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:#0e1f38; --blue:#1a4b8c; --accent:#2e7df7;
+    --bg:#f0f4fa; --white:#fff; --border:#d0ddf0;
+    --text:#1a2740; --muted:#6b7fa3; --light:#eef2ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  ::-webkit-scrollbar{width:6px;height:6px;}
+  ::-webkit-scrollbar-thumb{background:#c0cce0;border-radius:3px;}
+  a{color:var(--accent);text-decoration:none;font-weight:600;}
+  a:hover{text-decoration:underline;}
+  button{font-family:inherit;cursor:pointer;}
+  input,select,textarea{font-family:inherit;}
+
+  /* ── HEADER ── */
+  #header{background:var(--navy);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:200;}
+  .logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:-1px;}
+  .logo span{color:var(--accent);}
+  .htitle{font-size:15px;font-weight:700;color:#fff;margin-left:14px;}
+  .hsub{font-size:11px;color:#8fa5cc;margin-top:2px;}
+  .sync-badge{font-size:11px;color:#8fa5cc;background:rgba(255,255,255,0.06);padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);margin-right:10px;}
+  .sync-dot{color:#69db7c;}
+  .btn-add{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-weight:700;font-size:13px;}
+  .btn-add:hover{background:#1a6be0;}
+
+  /* ── STATS BAR ── */
+  #statsbar{background:var(--navy);display:flex;overflow-x:auto;border-bottom:1px solid rgba(255,255,255,0.06);}
+  .stat-card{padding:12px 22px;text-align:center;border-right:1px solid rgba(255,255,255,0.07);min-width:100px;flex-shrink:0;}
+  .stat-val{font-size:19px;font-weight:800;}
+  .stat-lbl{font-size:10px;color:#8fa5cc;margin-top:3px;text-transform:uppercase;letter-spacing:.05em;}
+
+  /* ── TOOLBAR ── */
+  #toolbar{background:#fff;border-bottom:1px solid var(--border);padding:10px 28px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;position:sticky;top:76px;z-index:199;}
+  #toolbar input[type=text]{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);font-size:13px;width:200px;outline:none;}
+  #toolbar select{padding:5px 10px;border-radius:8px;border:1.5px solid var(--border);font-size:12px;outline:none;}
+  .view-toggle{display:flex;background:#f0f4fa;border-radius:8px;padding:3px;gap:2px;margin-left:4px;}
+  .vbtn{padding:4px 12px;border:none;background:transparent;border-radius:6px;font-size:12px;color:var(--muted);}
+  .vbtn.active{background:#fff;color:var(--text);font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.10);}
+  #counter{margin-left:auto;font-size:12px;color:var(--muted);}
+
+  /* ── MAIN ── */
+  #main{padding:18px 28px 60px;}
+
+  /* ── TABLE ── */
+  #tableview{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.07);}
+  thead{background:var(--navy);}
+  th{padding:10px 13px;text-align:left;font-size:10px;font-weight:700;color:#8fa5cc;text-transform:uppercase;letter-spacing:.08em;border-right:1px solid rgba(255,255,255,0.05);white-space:nowrap;}
+  tr.lrow{border-bottom:1px solid #e8eef6;transition:background .12s;}
+  tr.lrow:hover{background:#f5f8ff;}
+  td{padding:11px 13px;vertical-align:middle;border-right:1px solid #e8eef6;font-size:13px;}
+  .badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;white-space:nowrap;}
+  .prio-HOCH{background:#fdecea;color:#c0392b;border:1px solid #f5b8b0;}
+  .prio-MITTEL{background:#fdf3e3;color:#d35400;border:1px solid #f0d090;}
+  .prio-NIEDRIG{background:#e8f5ee;color:#1a7a3c;border:1px solid #b8e0c8;}
+  .no-site{color:#c92a2a;font-size:12px;font-weight:600;}
+  .mini-sel{font-size:11px;border:1px solid var(--border);border-radius:6px;padding:3px 6px;outline:none;max-width:135px;}
+  .icon-btn{background:none;border:none;font-size:14px;padding:2px 5px;border-radius:4px;}
+  .icon-btn:hover{background:#f0f4fa;}
+
+  /* ── KANBAN ── */
+  #kanbanview{display:flex;gap:12px;overflow-x:auto;padding-bottom:16px;}
+  .kcol{min-width:220px;flex:0 0 220px;background:#f4f7fc;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+  .kcol-head{padding:10px 14px;font-weight:700;font-size:12px;display:flex;justify-content:space-between;align-items:center;}
+  .kcol-cnt{font-size:11px;background:rgba(0,0,0,.1);border-radius:10px;padding:1px 8px;}
+  .kcol-body{padding:8px;display:flex;flex-direction:column;gap:8px;max-height:65vh;overflow-y:auto;}
+  .kcard{background:#fff;border-radius:8px;padding:10px 12px;border:1px solid var(--border);cursor:pointer;}
+  .kcard:hover{box-shadow:0 2px 10px rgba(0,0,0,.08);}
+  .kcard-name{font-weight:700;font-size:13px;color:var(--navy);margin-bottom:4px;}
+  .kcard-sub{font-size:11px;color:var(--muted);margin-bottom:6px;}
+  .kcard-row{display:flex;justify-content:space-between;align-items:center;}
+  .kcard-preis{font-weight:800;font-size:12px;color:var(--blue);}
+  .kcard-actions{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;}
+  .mini-btn{background:#f0f4fa;border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-size:10px;color:#444;}
+  .mini-btn:hover{background:var(--light);}
+  .kempty{text-align:center;padding:20px;color:#b8c6de;font-size:12px;}
+
+  /* ── MODAL ── */
+  #overlay{display:none;position:fixed;inset:0;background:rgba(14,31,56,.6);z-index:1000;align-items:center;justify-content:center;padding:16px;}
+  #overlay.open{display:flex;}
+  #modal{background:#fff;border-radius:12px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+  .modal-head{padding:16px 20px;border-bottom:1px solid #e8eef6;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px;color:var(--navy);}
+  .modal-close{background:none;border:none;font-size:20px;color:var(--muted);}
+  .modal-body{padding:18px 20px 22px;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;}
+  .form-field{margin-bottom:13px;}
+  .form-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;}
+  .form-input{width:100%;padding:8px 12px;border-radius:8px;border:1.5px solid var(--border);font-size:13px;outline:none;}
+  .form-input:focus{border-color:var(--accent);}
+  textarea.form-input{height:68px;resize:vertical;}
+  .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px;}
+  .btn-cancel{padding:8px 18px;border-radius:8px;border:1.5px solid var(--border);background:#fff;font-size:13px;}
+  .btn-save{padding:8px 20px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-weight:700;font-size:13px;}
+  .btn-save:hover{background:#1a6be0;}
+  .btn-danger{padding:8px 14px;border-radius:8px;border:none;background:#fdecea;color:#c0392b;font-weight:700;font-size:13px;margin-right:auto;}
+
+  /* ── TOAST ── */
+  #toast{display:none;position:fixed;bottom:24px;right:24px;padding:11px 22px;border-radius:10px;color:#fff;font-weight:700;font-size:13px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.25);animation:slideUp .3s ease;}
+  @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .empty-msg{text-align:center;padding:60px;color:var(--muted);}
+
+  @media(max-width:700px){
+    #header,#toolbar,#main{padding-left:12px;padding-right:12px;}
+    .form-grid{grid-template-columns:1fr;}
+    #toolbar{top:95px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div style="display:flex;align-items:center;">
+    <div class="logo">PW<span>.</span></div>
+    <div style="margin-left:14px;">
+      <div class="htitle">PrimeWeb Design – CRM</div>
+      <div class="hsub">Lead-Manager · 200km Umkreis Rüdesheim am Rhein</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;">
+    <div class="sync-badge"><span class="sync-dot">●</span> <span id="syncLabel">Bereit</span></div>
+    <button class="btn-add" onclick="openAddModal()">+ Lead hinzufügen</button>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div id="statsbar">
+  <div class="stat-card"><div class="stat-val" id="s-total" style="color:#fff">0</div><div class="stat-lbl">Leads gesamt</div></div>
+  <div class="stat-card"><div class="stat-val" id="s-hoch" style="color:#ff8787">0</div><div class="stat-lbl">🔴 Priorität HOCH</div></div>
+  <div class="stat-card"><div class="stat-val" id="s-offen" style="color:#74c0fc">0</div><div class="stat-lbl">Offen</div></div>
+  <div class="stat-card"><div class="stat-val" id="s-kontaktiert" style="color:#ffd43b">0</div><div class="stat-lbl">Kontaktiert</div></div>
+  <div class="stat-card"><div class="stat-val" id="s-gespraeche" style="color:#69db7c">0</div><div class="stat-lbl">Im Gespräch</div></div>
+  <div class="stat-card"><div class="stat-val" id="s-abgeschlossen" style="color:#a9e34b">0</div><div class="stat-lbl">Abgeschlossen</div></div>
+  <div class="stat-card"><div class="stat-val" id="s-potenzial" style="color:#da77f2">0 €</div><div class="stat-lbl">Potenzial</div></div>
+  <div class="stat-card"><div class="stat-val" id="s-umsatz" style="color:#69db7c">0 €</div><div class="stat-lbl">Umsatz erzielt</div></div>
+</div>
+
+<!-- TOOLBAR -->
+<div id="toolbar">
+  <input type="text" id="searchInput" placeholder="🔍  Suchen…" oninput="renderAll()">
+  <select id="filterPrio" onchange="renderAll()">
+    <option value="">Alle Prioritäten</option>
+    <option>HOCH</option><option>MITTEL</option><option>NIEDRIG</option>
+  </select>
+  <select id="filterStatus" onchange="renderAll()">
+    <option value="">Alle Status</option>
+    <option>Offen</option><option>Kontaktiert</option><option>Im Gespräch</option><option>Abgeschlossen</option><option>Abgelehnt</option>
+  </select>
+  <select id="filterBranche" onchange="renderAll()">
+    <option value="">Alle Branchen</option>
+  </select>
+  <div class="view-toggle">
+    <button class="vbtn active" id="vbtn-table" onclick="switchView('table')">☰ Liste</button>
+    <button class="vbtn" id="vbtn-kanban" onclick="switchView('kanban')">⬜ Kanban</button>
+  </div>
+  <span id="counter" style="margin-left:auto;font-size:12px;color:var(--muted);"></span>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main">
+  <div id="tableview"></div>
+  <div id="kanbanview" style="display:none;"></div>
+</div>
+
+<!-- MODAL -->
+<div id="overlay" onclick="closeModal()">
+  <div id="modal" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <span id="modalTitle">Lead bearbeiten</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-field"><label class="form-label">Firma *</label><input class="form-input" id="f-firma" placeholder="Firmenname"></div>
+        <div class="form-field"><label class="form-label">Ort *</label><input class="form-input" id="f-ort" placeholder="Stadt"></div>
+        <div class="form-field"><label class="form-label">Branche</label><input class="form-input" id="f-branche" placeholder="z.B. Elektriker"></div>
+        <div class="form-field"><label class="form-label">Telefon</label><input class="form-input" id="f-tel" placeholder="0xxxx xxxxxx"></div>
+        <div class="form-field" style="grid-column:1/-1"><label class="form-label">Website URL</label><input class="form-input" id="f-website" placeholder="https://..."></div>
+        <div class="form-field"><label class="form-label">Priorität</label>
+          <select class="form-input" id="f-prio"><option>HOCH</option><option>MITTEL</option><option>NIEDRIG</option></select></div>
+        <div class="form-field"><label class="form-label">Status</label>
+          <select class="form-input" id="f-status"><option>Offen</option><option>Kontaktiert</option><option>Im Gespräch</option><option>Abgeschlossen</option><option>Abgelehnt</option></select></div>
+        <div class="form-field"><label class="form-label">Paket</label>
+          <select class="form-input" id="f-paket"><option>Landing Page</option><option>Business</option><option>Erweitertes Paket</option><option>Online-Shop</option></select></div>
+        <div class="form-field"><label class="form-label">Preis (€)</label><input class="form-input" id="f-preis" type="number" placeholder="499"></div>
+        <div class="form-field"><label class="form-label">km von Rüdesheim</label><input class="form-input" id="f-km" type="number" placeholder="0"></div>
+      </div>
+      <div class="form-field"><label class="form-label">Problem / Website-Schwäche</label><textarea class="form-input" id="f-problem" placeholder="Was fehlt oder ist veraltet?"></textarea></div>
+      <div class="form-field"><label class="form-label">Notiz</label><textarea class="form-input" id="f-notiz" placeholder="Interne Notizen, nächster Schritt…"></textarea></div>
+      <div class="form-actions">
+        <button class="btn-danger" id="btn-delete" onclick="deleteCurrent()" style="display:none">🗑️ Löschen</button>
+        <button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
+        <button class="btn-save" onclick="saveCurrent()">💾 Speichern</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ─── SEED DATA ────────────────────────────────────────────────────────────────
+const SEED = [
+  {id:1,  firma:"Fath GmbH Haustechnik",           ort:"Rüdesheim",          branche:"Heizung/Sanitär",   website:"https://www.haustechnik-fath.de",            problem:"Reine Icon-Navigation, kein Kontaktformular, Design ~2012, nicht mobil",paket:"Business",     preis:999, tel:"06722 1878",    prio:"HOCH",   status:"Offen",km:2,  notiz:""},
+  {id:2,  firma:"Elektro Marienthaler Str. 57",     ort:"Rüdesheim",          branche:"Elektriker",        website:"",                                            problem:"Nur Telefonbucheintrag – kein Webauftritt",                              paket:"Landing Page", preis:499, tel:"06722 710485",  prio:"HOCH",   status:"Offen",km:2,  notiz:""},
+  {id:3,  firma:"Haar-Creativ Gabi Nägler",         ort:"Rüdesheim",          branche:"Friseur",           website:"https://www.friseur-haar-creativ.de",         problem:"Haftungsausschluss von 1998! Kein mobiles Design, kein Online-Termin",   paket:"Business",     preis:999, tel:"0152 04258535", prio:"HOCH",   status:"Offen",km:2,  notiz:""},
+  {id:4,  firma:"Jolie Beauty World",               ort:"Rüdesheim",          branche:"Kosmetik",          website:"",                                            problem:"Nur Google Maps – kein Webauftritt",                                      paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:2,  notiz:""},
+  {id:5,  firma:"Fußpflege Kämpfer",                ort:"Rüdesheim",          branche:"Kosmetik",          website:"https://www.fusspflege-kaemper.de",           problem:"Extrem veraltete Website, nicht mobil, kein Online-Termin",               paket:"Landing Page", preis:499, tel:"0170 3863053",  prio:"HOCH",   status:"Offen",km:2,  notiz:""},
+  {id:6,  firma:"Paul Schrörs Schreiner",           ort:"Rüdesheim",          branche:"Schreinerei",       website:"",                                            problem:"Nur Verzeichniseintrag – kein Webauftritt",                               paket:"Business",     preis:999, tel:"",              prio:"HOCH",   status:"Offen",km:2,  notiz:""},
+  {id:7,  firma:"Hotel Zum grünen Kranz",           ort:"Rüdesheim",          branche:"Gastronomie",       website:"https://www.gruenerkranz.jimdosite.com",      problem:"Kostenlose jimdoSite-Subdomain – extrem unprofessionell",                paket:"Business",     preis:999, tel:"06722 48336",   prio:"HOCH",   status:"Offen",km:2,  notiz:""},
+  {id:8,  firma:"Maler Hergenröder",                ort:"Oestrich-Winkel",    branche:"Maler",             website:"https://www.maler-wh.de",                     problem:"Website ~2005, kein mobiles Design, kein Formular",                      paket:"Business",     preis:999, tel:"",              prio:"HOCH",   status:"Offen",km:15, notiz:""},
+  {id:9,  firma:"Heinrich Charwat jun.",            ort:"Geisenheim",         branche:"Schreinerei",       website:"",                                            problem:"Nur Brancheneinträge – kein Webauftritt",                                 paket:"Business",     preis:999, tel:"",              prio:"HOCH",   status:"Offen",km:8,  notiz:""},
+  {id:10, firma:"Piccolo Kosmetik Kaplan-Lorenz",  ort:"Geisenheim",         branche:"Kosmetik",          website:"",                                            problem:"Nur GoYellow-Eintrag – kein Webauftritt",                                 paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:8,  notiz:""},
+  {id:11, firma:"Schreinerei Gerichtsstr.",         ort:"Rüdesheim",          branche:"Schreinerei",       website:"",                                            problem:"Nur Verzeichnis, kein Webauftritt",                                       paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:2,  notiz:""},
+  {id:12, firma:"Maler Chauvignystr.",              ort:"Geisenheim",         branche:"Maler",             website:"",                                            problem:"Nur GelbeSeiten – kein Webauftritt",                                      paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:8,  notiz:""},
+  {id:13, firma:"Café Federleicht",                 ort:"Rheingau",           branche:"Gastronomie",       website:"",                                            problem:"Neu 2024 – nur Erwähnung auf Rheingau.com, keine Website",                paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:5,  notiz:""},
+  {id:14, firma:"Plattenstübchen Geisenheim",       ort:"Geisenheim",         branche:"Café/Musik",        website:"",                                            problem:"Nur Erwähnung auf Rheingau.com – keine eigene Website",                   paket:"Landing Page", preis:499, tel:"06722 7310",    prio:"HOCH",   status:"Offen",km:8,  notiz:""},
+  {id:15, firma:"RheingauGärten",                   ort:"Geisenheim",         branche:"Garten/Landschaft", website:"",                                            problem:"Nur Houzz-Profil ohne Bewertungen – keine eigene Domain",                 paket:"Business",     preis:999, tel:"0170 8168943",  prio:"HOCH",   status:"Offen",km:8,  notiz:""},
+  {id:16, firma:"Carlos Heil Bedachung",            ort:"Rüdesheim",          branche:"Dachdecker",        website:"",                                            problem:"Nur MyHammer-Eintrag – keine Website",                                    paket:"Business",     preis:999, tel:"",              prio:"HOCH",   status:"Offen",km:2,  notiz:""},
+  {id:17, firma:"Reutershahn Kosmetikstudio",       ort:"Geisenheim",         branche:"Kosmetik",          website:"",                                            problem:"Kein Webauftritt vorhanden",                                              paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:8,  notiz:""},
+  {id:18, firma:"Elektro Presberg",                 ort:"Rüdesheim/Presberg", branche:"Elektriker",        website:"",                                            problem:"Nur Branchenbuch – keine Website",                                        paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:5,  notiz:""},
+  {id:19, firma:"Haar Kreativ Darmstadt",           ort:"Darmstadt",          branche:"Friseur",           website:"https://haar-kreativ-darmstadt.jimdofree.com",problem:"Kostenlose jimdofree.com-Subdomain – keine eigene Domain",                paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:80, notiz:""},
+  {id:20, firma:"Wehnert Sanitär & Heizung",       ort:"Wiesbaden",          branche:"Heizung/Sanitär",   website:"https://www.wehnert-sanitaer-heizung.de",     problem:"Generisches Design, Texte veraltet, keine Referenzen",                   paket:"Business",     preis:999, tel:"",              prio:"HOCH",   status:"Offen",km:35, notiz:""},
+  {id:21, firma:"Karl Schmidt SHK",                ort:"Wiesbaden",          branche:"Heizung/Sanitär",   website:"https://karlschmidt-shk.de",                  problem:"Generisches Template, schwache Bildsprache",                              paket:"Business",     preis:999, tel:"",              prio:"MITTEL", status:"Offen",km:35, notiz:""},
+  {id:22, firma:"B&S Sanitär Nieder-Olm",          ort:"Nieder-Olm",         branche:"Heizung/Sanitär",   website:"https://bs-sanitaer.de",                      problem:"Veraltetes Design, schlechtes SEO",                                       paket:"Business",     preis:999, tel:"",              prio:"MITTEL", status:"Offen",km:50, notiz:""},
+  {id:23, firma:"Elektriker Nikolaus-Otto-Str.",   ort:"Mainz",              branche:"Elektriker",        website:"",                                            problem:"Nur Branchenbucheintrag – kein Webauftritt",                              paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:55, notiz:""},
+  {id:24, firma:"Elektriker Poststraße Mainz",     ort:"Mainz",              branche:"Elektriker",        website:"",                                            problem:"Branchenbucheintrag ohne Website",                                         paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:55, notiz:""},
+  {id:25, firma:"Rathgeber & Glaser Dachdecker",   ort:"Wiesbaden",          branche:"Dachdecker",        website:"https://www.rathgeber-glaser.de",             problem:"4-Sterne-Betrieb, Design überholt, kein Online-Formular",                paket:"Business",     preis:999, tel:"",              prio:"MITTEL", status:"Offen",km:35, notiz:""},
+  {id:26, firma:"Schreinermeister D. Wenzl",       ort:"Oestrich-Winkel",    branche:"Schreinerei",       website:"",                                            problem:"Nur Verzeichniseintrag – kein Webauftritt",                               paket:"Business",     preis:999, tel:"",              prio:"HOCH",   status:"Offen",km:15, notiz:""},
+  {id:27, firma:"Nies GmbH",                       ort:"Wiesbaden/Frankfurt", branche:"Heizung/Sanitär",  website:"https://nies-gmbh.de",                        problem:"Generischer One-Pager, kein Kontaktformular, schlechte mobile Ansicht",  paket:"Business",     preis:999, tel:"",              prio:"HOCH",   status:"Offen",km:60, notiz:""},
+  {id:28, firma:"Maler Höhenstr. Frankfurt",       ort:"Frankfurt-Nordend",  branche:"Maler",             website:"",                                            problem:"Nur WerKenntDenBesten-Eintrag",                                           paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:75, notiz:""},
+  {id:29, firma:"Elektro Triebstr. Frankfurt",     ort:"Frankfurt-Bergen",   branche:"Elektriker",        website:"",                                            problem:"Nur Branchenbucheintrag",                                                 paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:75, notiz:""},
+  {id:30, firma:"Friseur Kosmetik Katrin Krüger",  ort:"Rhein-Main",         branche:"Friseur/Kosmetik",  website:"https://friseur-kosmetik-katrin-k.jimdo.com", problem:"Kostenlose Jimdo-Subdomain – keine professionelle Domain",               paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:65, notiz:""},
+  {id:31, firma:"Berg Möbelschreinerei GmbH",      ort:"Oestrich-Winkel",    branche:"Schreinerei",       website:"https://www.berg-schreiner.de",               problem:"Veraltetes CMS, schlechte Mobiloptimierung, keine Online-Anfrage",       paket:"Business",     preis:999, tel:"06723 2687",    prio:"MITTEL", status:"Offen",km:15, notiz:""},
+  {id:32, firma:"Okaty-Hachenberger GmbH",         ort:"Eltville",           branche:"Schreinerei",       website:"https://www.okaty-hachenberger.de",           problem:"Design veraltet, keine Referenzgalerie, kein Online-Formular",           paket:"Business",     preis:999, tel:"06123 799853",  prio:"MITTEL", status:"Offen",km:18, notiz:""},
+  {id:33, firma:"Friseur Heideweg Heidelberg",     ort:"Heidelberg",         branche:"Friseur",           website:"",                                            problem:"Nur Google Maps – kein Webauftritt",                                      paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:140,notiz:""},
+  {id:34, firma:"Kosmetikstudio Mannheim-Neckarstadt",ort:"Mannheim",        branche:"Kosmetik",          website:"",                                            problem:"Nur Instagram – keine Website oder Domain",                               paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:130,notiz:""},
+  {id:35, firma:"Maler Bergstraße Bensheim",       ort:"Bensheim",           branche:"Maler",             website:"",                                            problem:"Nur MyHammer-Profil – kein Webauftritt",                                  paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:95, notiz:""},
+  {id:36, firma:"Bistro am Marktplatz Darmstadt",  ort:"Darmstadt",          branche:"Gastronomie",       website:"",                                            problem:"Nur Google Maps – viele Bewertungen aber keine Website",                  paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:80, notiz:""},
+  {id:37, firma:"Reichert Möbeldesign",            ort:"Geisenheim",         branche:"Möbeldesign",       website:"https://www.reichert-moebeldesign.de",        problem:"Veraltetes Design, keine Referenzfotos, nicht mobil",                    paket:"Business",     preis:999, tel:"06722 8834",    prio:"MITTEL", status:"Offen",km:8,  notiz:""},
+  {id:38, firma:"Gaststätte Wisperstube",          ort:"Geroldstein/Wisper", branche:"Gastronomie",       website:"https://www.wisperstube.de",                  problem:"Sehr alte Website, nur Text, kein Menü, nicht mobil",                    paket:"Landing Page", preis:499, tel:"06775 544",     prio:"HOCH",   status:"Offen",km:50, notiz:""},
+  {id:39, firma:"Sanitär Kirchstraße Mainz-Kastel",ort:"Mainz-Kastel",       branche:"Heizung/Sanitär",   website:"",                                            problem:"Nur Branchenbucheintrag – kein Webauftritt",                              paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:55, notiz:""},
+  {id:40, firma:"Kosmetik am Dom Geisenheim",      ort:"Geisenheim",         branche:"Kosmetik",          website:"",                                            problem:"Nur GoYellow – absolut kein Webauftritt",                                 paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:8,  notiz:""},
+  {id:41, firma:"Maler Kaiserslautern Innenstadt", ort:"Kaiserslautern",     branche:"Maler",             website:"",                                            problem:"Nur Brancheneintrag – kein Webauftritt",                                  paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:155,notiz:""},
+  {id:42, firma:"Elektriker Saarbrücken Mitte",    ort:"Saarbrücken",        branche:"Elektriker",        website:"",                                            problem:"Nur GelbeSeiten – kein Webauftritt",                                      paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:190,notiz:""},
+  {id:43, firma:"Schreinerei Ernst Kiemle GmbH",   ort:"Saarbrücken",        branche:"Schreinerei",       website:"",                                            problem:"Nur MeineStadt-Eintrag – keine eigene Website",                           paket:"Business",     preis:999, tel:"",              prio:"MITTEL", status:"Offen",km:190,notiz:""},
+  {id:44, firma:"Sanitär Pirmasens Westpfalz",     ort:"Pirmasens",          branche:"Heizung/Sanitär",   website:"",                                            problem:"Nur Verzeichniseintrag – kein Webauftritt",                               paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:170,notiz:""},
+  {id:45, firma:"Peter Ortseifen Schreinerei",     ort:"Eltville",           branche:"Schreinerei",       website:"",                                            problem:"Nur Verzeichniseintrag – kein Webauftritt",                               paket:"Business",     preis:999, tel:"",              prio:"HOCH",   status:"Offen",km:18, notiz:""},
+  {id:46, firma:"SHK Wiesbaden Rheingaustr.",      ort:"Wiesbaden-Schierstein",branche:"Heizung/Sanitär", website:"",                                            problem:"Nur WerKenntDenBesten – kein eigenständiger Webauftritt",                 paket:"Business",     preis:999, tel:"",              prio:"HOCH",   status:"Offen",km:35, notiz:""},
+  {id:47, firma:"Elektriker Idarwaldstr. Frankfurt",ort:"Frankfurt-Unterliederbach",branche:"Elektriker",  website:"",                                            problem:"Nur WerKenntDenBesten – kein Webauftritt",                               paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:70, notiz:""},
+  {id:48, firma:"Sanitär Kurmainzstr. Mainz",      ort:"Mainz",              branche:"Heizung/Sanitär",   website:"",                                            problem:"Kein Webauftritt auffindbar",                                             paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:55, notiz:""},
+  {id:49, firma:"Uta Linke Kosmetik/Wellness",     ort:"Rüdesheim",          branche:"Kosmetik",          website:"",                                            problem:"Nur Branchenbuch rheingau.de – kein eigener Webauftritt",                 paket:"Landing Page", preis:499, tel:"0170 3863053",  prio:"HOCH",   status:"Offen",km:2,  notiz:""},
+  {id:50, firma:"Friseur Rathausstr. Geisenheim",  ort:"Geisenheim",         branche:"Friseur",           website:"",                                            problem:"Nur rheingau.de-Eintrag – kein Webauftritt",                              paket:"Landing Page", preis:499, tel:"06722 75392",   prio:"HOCH",   status:"Offen",km:8,  notiz:""},
+  {id:51, firma:"Gasthof 2 Mohren Rüdesheim",      ort:"Rüdesheim",          branche:"Gastronomie",       website:"",                                            problem:"Viele Gastroguide-Bewertungen, aber keine eigene Website",                paket:"Landing Page", preis:499, tel:"",              prio:"MITTEL", status:"Offen",km:2,  notiz:""},
+  {id:52, firma:"Elektro Lahnstraße Darmstadt",    ort:"Darmstadt",          branche:"Elektriker",        website:"",                                            problem:"Nur Handwerkerverzeichnis – kein Webauftritt",                            paket:"Landing Page", preis:499, tel:"",              prio:"HOCH",   status:"Offen",km:80, notiz:""},
+];
+
+const STORAGE_KEY = "primeweb_crm_v2";
+const STATUS_COLS  = ["Offen","Kontaktiert","Im Gespräch","Abgeschlossen","Abgelehnt"];
+const STATUS_STYLE = {
+  "Offen":        {bg:"#eef2ff",color:"#3b5bdb"},
+  "Kontaktiert":  {bg:"#fff3bf",color:"#7d5a00"},
+  "Im Gespräch":  {bg:"#d3f9d8",color:"#1a7a3c"},
+  "Abgeschlossen":{bg:"#a9e34b",color:"#2b4a00"},
+  "Abgelehnt":    {bg:"#ffe3e3",color:"#c92a2a"},
+};
+
+let leads = [];
+let currentId = null;
+let currentView = "table";
+
+// ── LOAD & SAVE ───────────────────────────────────────────────────────────────
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    leads = raw ? JSON.parse(raw) : SEED;
+    if (!raw) save(false);
+  } catch(e) { leads = SEED; }
+}
+
+function save(toast=true) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(leads));
+  const now = new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+  document.getElementById("syncLabel").textContent = "Gespeichert " + now;
+  if (toast) showToast("✅ Gespeichert");
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function getFiltered() {
+  const q   = document.getElementById("searchInput").value.toLowerCase();
+  const p   = document.getElementById("filterPrio").value;
+  const st  = document.getElementById("filterStatus").value;
+  const br  = document.getElementById("filterBranche").value;
+  return leads.filter(l => {
+    if (p  && l.prio    !== p)  return false;
+    if (st && l.status  !== st) return false;
+    if (br && l.branche !== br) return false;
+    if (q  && ![l.firma,l.ort,l.branche,l.problem,l.notiz].join(" ").toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function renderAll() {
+  buildBranchenFilter();
+  updateStats();
+  const f = getFiltered();
+  document.getElementById("counter").textContent = f.length + " / " + leads.length + " Leads";
+  if (currentView === "table") renderTable(f);
+  else renderKanban(f);
+}
+
+function buildBranchenFilter() {
+  const sel = document.getElementById("filterBranche");
+  const cur = sel.value;
+  const branchen = ["", ...new Set(leads.map(l=>l.branche).filter(Boolean)).values()].sort();
+  sel.innerHTML = '<option value="">Alle Branchen</option>' +
+    branchen.filter(b=>b).map(b=>`<option value="${esc(b)}" ${b===cur?"selected":""}>${esc(b)}</option>`).join("");
+}
+
+function updateStats() {
+  const done = leads.filter(l=>l.status==="Abgeschlossen");
+  const alive = leads.filter(l=>l.status!=="Abgelehnt");
+  set("s-total", leads.length);
+  set("s-hoch", leads.filter(l=>l.prio==="HOCH").length);
+  set("s-offen", leads.filter(l=>l.status==="Offen").length);
+  set("s-kontaktiert", leads.filter(l=>l.status==="Kontaktiert").length);
+  set("s-gespraeche", leads.filter(l=>l.status==="Im Gespräch").length);
+  set("s-abgeschlossen", done.length);
+  set("s-potenzial", alive.reduce((s,l)=>s+l.preis,0).toLocaleString("de-DE")+" €");
+  set("s-umsatz", done.reduce((s,l)=>s+l.preis,0).toLocaleString("de-DE")+" €");
+}
+
+function set(id, val) { document.getElementById(id).textContent = val; }
+
+// ── TABLE RENDER ──────────────────────────────────────────────────────────────
+function renderTable(rows) {
+  const tv = document.getElementById("tableview");
+  if (!rows.length) { tv.innerHTML = '<div class="empty-msg">Keine Leads gefunden.</div>'; return; }
+  tv.innerHTML = `
+  <table>
+    <thead><tr>
+      <th>Prio</th><th>Firma</th><th>Ort</th><th>Branche</th>
+      <th>Website</th><th>Problem</th><th>Paket</th><th>€</th>
+      <th>Tel.</th><th>Status</th><th>Aktion</th>
+    </tr></thead>
+    <tbody>${rows.map(rowHTML).join("")}</tbody>
+  </table>`;
+}
+
+function rowHTML(l) {
+  const s = STATUS_STYLE[l.status]||{bg:"#eee",color:"#333"};
+  const opts = STATUS_COLS.map(s=>`<option value="${s}" ${s===l.status?"selected":""}>${s}</option>`).join("");
+  return `<tr class="lrow">
+    <td><span class="badge prio-${l.prio}">${l.prio}</span></td>
+    <td style="font-weight:700;color:#0e1f38;min-width:150px">${esc(l.firma)}</td>
+    <td style="color:#6b7fa3;font-size:12px">${esc(l.ort)}</td>
+    <td style="font-size:12px">${esc(l.branche)}</td>
+    <td>${l.website ? `<a href="${esc(l.website)}" target="_blank">↗ öffnen</a>` : '<span class="no-site">⛔ Keine</span>'}</td>
+    <td style="max-width:200px;font-size:12px;line-height:1.4;color:#444">${esc(l.problem)}</td>
+    <td><span class="badge" style="background:#eef2ff;color:#3b5bdb">${esc(l.paket)}</span></td>
+    <td style="font-weight:800;color:#1a4b8c;white-space:nowrap">${l.preis.toLocaleString("de-DE")} €</td>
+    <td style="font-size:12px;color:#6b7fa3;white-space:nowrap">${esc(l.tel||"–")}</td>
+    <td><select class="mini-sel" onchange="quickStatus(${l.id},this.value)">${opts}</select></td>
+    <td style="white-space:nowrap">
+      <button class="icon-btn" onclick="openEdit(${l.id})" title="Bearbeiten">✏️</button>
+    </td>
+  </tr>`;
+}
+
+// ── KANBAN RENDER ─────────────────────────────────────────────────────────────
+function renderKanban(rows) {
+  const kv = document.getElementById("kanbanview");
+  kv.innerHTML = STATUS_COLS.map(col => {
+    const cards = rows.filter(l=>l.status===col);
+    const st = STATUS_STYLE[col]||{bg:"#eee",color:"#333"};
+    return `<div class="kcol">
+      <div class="kcol-head" style="background:${st.bg};color:${st.color}">
+        ${col} <span class="kcol-cnt">${cards.length}</span>
+      </div>
+      <div class="kcol-body">
+        ${cards.length ? cards.map(l => `
+          <div class="kcard" onclick="openEdit(${l.id})">
+            <div class="kcard-name">${esc(l.firma)}</div>
+            <div class="kcard-sub">${esc(l.ort)} · ${esc(l.branche)}</div>
+            <div class="kcard-row">
+              <span class="badge prio-${l.prio}">${l.prio}</span>
+              <span class="kcard-preis">${l.preis.toLocaleString("de-DE")} €</span>
+            </div>
+            ${l.website?`<a href="${esc(l.website)}" target="_blank" onclick="event.stopPropagation()" style="font-size:11px;display:block;margin-top:5px">↗ Website</a>`:""}
+            <div class="kcard-actions">
+              ${STATUS_COLS.filter(s=>s!==col).slice(0,3).map(s=>`
+                <button class="mini-btn" onclick="event.stopPropagation();quickStatus(${l.id},'${s}')">→ ${s}</button>`).join("")}
+            </div>
+          </div>`).join("") : '<div class="kempty">Leer</div>'}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+// ── QUICK STATUS ──────────────────────────────────────────────────────────────
+function quickStatus(id, status) {
+  const l = leads.find(l=>l.id===id);
+  if (l) { l.status = status; save(); renderAll(); }
+}
+
+// ── MODAL LOGIC ───────────────────────────────────────────────────────────────
+function openAddModal() {
+  currentId = null;
+  document.getElementById("modalTitle").textContent = "Neuen Lead hinzufügen";
+  document.getElementById("btn-delete").style.display = "none";
+  setFormValues({firma:"",ort:"",branche:"",website:"",problem:"",paket:"Landing Page",preis:499,tel:"",prio:"HOCH",status:"Offen",km:"",notiz:""});
+  document.getElementById("overlay").classList.add("open");
+}
+
+function openEdit(id) {
+  const l = leads.find(l=>l.id===id);
+  if (!l) return;
+  currentId = id;
+  document.getElementById("modalTitle").textContent = "Lead bearbeiten";
+  document.getElementById("btn-delete").style.display = "inline-block";
+  setFormValues(l);
+  document.getElementById("overlay").classList.add("open");
+}
+
+function setFormValues(l) {
+  ["firma","ort","branche","website","problem","paket","preis","tel","prio","status","km","notiz"].forEach(k=>{
+    const el = document.getElementById("f-"+k);
+    if (el) el.value = l[k] ?? "";
+  });
+}
+
+function getFormValues() {
+  const get = id => document.getElementById("f-"+id)?.value ?? "";
+  return {
+    firma:get("firma"), ort:get("ort"), branche:get("branche"),
+    website:get("website"), problem:get("problem"), paket:get("paket"),
+    preis:Number(get("preis"))||0, tel:get("tel"), prio:get("prio"),
+    status:get("status"), km:Number(get("km"))||0, notiz:get("notiz")
+  };
+}
+
+function saveCurrent() {
+  const vals = getFormValues();
+  if (!vals.firma.trim()) { showToast("⚠️ Firma ist Pflichtfeld","#c92a2a"); return; }
+  if (currentId === null) {
+    leads.push({id: Date.now(), ...vals});
+    showToast("➕ Lead hinzugefügt");
+  } else {
+    const i = leads.findIndex(l=>l.id===currentId);
+    if (i>=0) leads[i] = {...leads[i], ...vals};
+    showToast("✅ Lead aktualisiert");
+  }
+  save(false);
+  renderAll();
+  closeModal();
+}
+
+function deleteCurrent() {
+  if (!confirm("Lead wirklich löschen?")) return;
+  leads = leads.filter(l=>l.id!==currentId);
+  save(false);
+  renderAll();
+  closeModal();
+  showToast("🗑️ Gelöscht");
+}
+
+function closeModal() {
+  document.getElementById("overlay").classList.remove("open");
+}
+
+// ── VIEW SWITCH ───────────────────────────────────────────────────────────────
+function switchView(v) {
+  currentView = v;
+  document.getElementById("tableview").style.display  = v==="table"  ? "" : "none";
+  document.getElementById("kanbanview").style.display = v==="kanban" ? "" : "none";
+  document.getElementById("vbtn-table").classList.toggle("active",  v==="table");
+  document.getElementById("vbtn-kanban").classList.toggle("active", v==="kanban");
+  renderAll();
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, bg="#1a7a3c") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.style.background = bg;
+  t.style.display = "block";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ t.style.display="none"; }, 2800);
+}
+
+// ── UTIL ──────────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ── KEYBOARD ──────────────────────────────────────────────────────────────────
+document.addEventListener("keydown", e => { if (e.key==="Escape") closeModal(); });
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+load();
+renderAll();
+showToast("☁️ " + leads.length + " Leads geladen");
+</script>
+</body>
+</html>
