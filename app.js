@@ -1,4 +1,4 @@
-const API_BASE = "/api";
+const API_BASE = "http://127.0.0.1:3000/api";
 const STATUSES = ["Offen", "Kontaktiert", "Im GesprÃ¤ch", "Abgeschlossen", "Abgelehnt"];
 const PRIORITIES = ["HOCH", "MITTEL", "NIEDRIG"];
 const DEFAULT_LEAD = {
