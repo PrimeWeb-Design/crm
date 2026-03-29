@@ -29,6 +29,10 @@ const DEFAULT_LEAD = {
 
 let leads = [];
 let currentId = null;
+let totalLeads = 0;
+let currentOffset = 0;
+const PAGE_SIZE = 200;
+let searchTimer = null;
 
 const els = {
   rows: document.getElementById("rows"),
@@ -49,7 +53,10 @@ const els = {
   sHigh: document.getElementById("sHigh"),
   sActive: document.getElementById("sActive"),
   sWon: document.getElementById("sWon"),
-  sValue: document.getElementById("sValue")
+  sValue: document.getElementById("sValue"),
+  paginationInfo: document.getElementById("paginationInfo"),
+  prevBtn: document.getElementById("prevBtn"),
+  nextBtn: document.getElementById("nextBtn")
 };
 
 const fields = [
@@ -119,8 +126,12 @@ async function api(path, options = {}) {
   return response.json();
 }
 
-async function load() {
-  leads = (await api("/leads")).map(normalizeLead);
+async function load({ offset = 0, q = "" } = {}) {
+  const params = new URLSearchParams({ limit: PAGE_SIZE, offset, q });
+  const result = await api("/leads?" + params.toString());
+  leads = result.leads.map(normalizeLead);
+  totalLeads = result.total;
+  currentOffset = offset;
 }
 
 function updateSyncLabel(label = "Synchronisiert") {
@@ -194,9 +205,18 @@ function updateStats() {
   els.sValue.textContent = value.toLocaleString("de-DE") + " EUR";
 }
 
+function updatePagination() {
+  const from = totalLeads === 0 ? 0 : currentOffset + 1;
+  const to = Math.min(currentOffset + PAGE_SIZE, totalLeads);
+  els.paginationInfo.textContent = `Zeige ${from}–${to} von ${totalLeads.toLocaleString("de-DE")} Leads`;
+  els.prevBtn.disabled = currentOffset === 0;
+  els.nextBtn.disabled = currentOffset + PAGE_SIZE >= totalLeads;
+}
+
 function render() {
   updateSourceFilter();
   updateStats();
+  updatePagination();
   const rows = getFilteredLeads();
   els.rows.innerHTML = rows.map((lead) => {
     const websiteCell = lead.website
@@ -408,9 +428,26 @@ async function bootstrap() {
     if (file) importJson(file);
     event.target.value = "";
   });
-  [els.searchInput, els.prioFilter, els.statusFilter, els.sourceFilter].forEach((element) => {
+  els.searchInput.addEventListener("input", () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(async () => {
+      try {
+        await load({ offset: 0, q: els.searchInput.value.trim() });
+        render();
+      } catch (_e) { toast("Suche fehlgeschlagen", true); }
+    }, 350);
+  });
+  [els.prioFilter, els.statusFilter, els.sourceFilter].forEach((element) => {
     element.addEventListener("input", render);
     element.addEventListener("change", render);
+  });
+  els.prevBtn.addEventListener("click", async () => {
+    const newOffset = Math.max(0, currentOffset - PAGE_SIZE);
+    try { await load({ offset: newOffset, q: els.searchInput.value.trim() }); render(); } catch (_e) {}
+  });
+  els.nextBtn.addEventListener("click", async () => {
+    const newOffset = currentOffset + PAGE_SIZE;
+    try { await load({ offset: newOffset, q: els.searchInput.value.trim() }); render(); } catch (_e) {}
   });
   els.overlay.addEventListener("click", (event) => {
     if (event.target === els.overlay) closeModal();
