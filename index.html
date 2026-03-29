@@ -1,104 +1,104 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PrimeWeb CRM | Lead-Dashboard</title>
-  <meta name="robots" content="noindex,nofollow">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Syne:wght@700;800&display=swap">
-  <style>
-    :root { --ink:#102033; --ink-soft:#5a6c81; --panel:#ffffff; --accent:#c46b2d; --accent-dark:#9f511d; --success:#2d8a58; --warn:#b86d1e; --danger:#c53d3d; --blue:#2f62d6; --shadow:0 16px 40px rgba(16,32,51,0.08); }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:"Manrope",sans-serif;color:var(--ink);background:radial-gradient(circle at top left, rgba(196,107,45,.12), transparent 24%),linear-gradient(180deg,#eef2f5 0%,#f7f8fa 100%);min-height:100vh}
-    button,input,select,textarea{font:inherit}
-    a{text-decoration:none;color:inherit}
-    .shell{width:min(1480px,calc(100% - 28px));margin:0 auto}
-    .topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(255,255,255,.86);border-bottom:1px solid rgba(16,32,51,.08)}
-    .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0}
-    .brand{display:flex;align-items:center;gap:12px}
-    .brand-badge{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,#102033,#294b71);color:#f2c46d;font-family:"Syne",sans-serif;font-size:22px}
-    .brand strong{display:block;font-size:18px;letter-spacing:-.03em}
-    .brand span span{display:block;color:var(--ink-soft);font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:800}
-    .topbar-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-    .sync{font-size:12px;color:var(--ink-soft);padding:10px 14px;border-radius:999px;background:rgba(16,32,51,.05)}
-    .btn{border:0;min-height:44px;padding:0 18px;border-radius:999px;font-weight:800;cursor:pointer;transition:.18s ease}
-    .btn-primary{background:var(--accent);color:#fff}
-    .btn-primary:hover{background:var(--accent-dark)}
-    .btn-secondary{background:#fff;color:var(--ink);border:1px solid rgba(16,32,51,.12)}
-    .btn-secondary:hover{background:#f7f8fa}
-    .btn-danger{background:rgba(197,61,61,.1);color:var(--danger)}
-    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;padding:24px 0 18px}
-    .panel{background:var(--panel);border:1px solid rgba(16,32,51,.08);border-radius:24px;box-shadow:var(--shadow)}
-    .hero-copy{padding:28px;background:linear-gradient(145deg,#102033,#284969);color:#fff}
-    .eyebrow{display:inline-flex;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.84);font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;margin-bottom:14px}
-    h1,h2,h3{font-family:"Syne",sans-serif;letter-spacing:-.04em;line-height:1.04}
-    h1{font-size:clamp(34px,4vw,52px);margin-bottom:14px}
-    .hero-copy p{color:rgba(255,255,255,.76);max-width:58ch}
-    .hero-points{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
-    .hero-points div{padding:14px;border-radius:18px;background:rgba(255,255,255,.08)}
-    .hero-points strong{display:block;font-size:24px;color:#f2c46d}
-    .hero-points span{font-size:13px;color:rgba(255,255,255,.72)}
-    .hero-side{padding:24px}
-    .hero-side p,.tips li,.muted{color:var(--ink-soft)}
-    .tips{display:grid;gap:10px;margin-top:18px;list-style:none}
-    .tips li{padding:12px 14px;border-radius:16px;background:rgba(16,32,51,.04)}
-    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:4px 0 18px}
-    .stat{padding:20px}
-    .stat-label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:800;margin-bottom:10px}
-    .stat-value{font-size:28px;font-weight:800;letter-spacing:-.04em}
-    .toolbar{display:grid;grid-template-columns:1.2fr repeat(3,.8fr) auto auto auto;gap:10px;align-items:center;margin-bottom:18px}
-    .toolbar input,.toolbar select,textarea,.field input,.field select{width:100%;min-height:46px;padding:12px 14px;border-radius:14px;border:1px solid rgba(16,32,51,.12);background:#fff;color:var(--ink);outline:none}
-    textarea{min-height:110px;resize:vertical}
-    .toolbar input:focus,.toolbar select:focus,.field input:focus,.field select:focus,textarea:focus{border-color:rgba(196,107,45,.6);box-shadow:0 0 0 4px rgba(196,107,45,.12)}
-    .table-wrap{overflow:auto;border-radius:22px;background:#fff;border:1px solid rgba(16,32,51,.08);box-shadow:var(--shadow)}
-    table{width:100%;border-collapse:collapse;min-width:1460px}
-    th,td{text-align:left;padding:14px;border-bottom:1px solid #edf1f4;vertical-align:top;font-size:14px}
-    th{position:sticky;top:0;z-index:1;background:#f7f9fb;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em;font-size:11px}
-    tbody tr:hover{background:#fbfcfd}
-    .company{font-weight:800;color:var(--ink);margin-bottom:4px}
-    .badge{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.04em;white-space:nowrap}
-    .prio-HOCH{background:rgba(197,61,61,.12);color:var(--danger)}
-    .prio-MITTEL{background:rgba(184,109,30,.12);color:var(--warn)}
-    .prio-NIEDRIG{background:rgba(45,138,88,.12);color:var(--success)}
-    .status-Offen{background:rgba(47,98,214,.12);color:var(--blue)}
-    .status-Kontaktiert{background:rgba(184,109,30,.12);color:var(--warn)}
-    .status-Im-Gespraech{background:rgba(45,138,88,.12);color:var(--success)}
-    .status-Abgeschlossen{background:rgba(45,138,88,.18);color:#16603a}
-    .status-Abgelehnt{background:rgba(197,61,61,.12);color:var(--danger)}
-    .row-actions{display:flex;gap:8px;flex-wrap:wrap}
-    .text-btn{border:0;background:transparent;color:var(--blue);cursor:pointer;font-weight:800}
-    .quick-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .quick-link{display:inline-flex;align-items:center;min-height:32px;padding:0 10px;border-radius:999px;background:rgba(47,98,214,.1);color:var(--blue);font-size:12px;font-weight:800}
-    .quick-link.alt{background:rgba(16,32,51,.07);color:var(--ink-soft)}
-    .contact-list{display:grid;gap:4px}
-    .empty{padding:44px 18px;text-align:center;color:var(--ink-soft)}
-    .overlay{position:fixed;inset:0;background:rgba(10,18,28,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:40}
-    .overlay.open{display:flex}
-    .modal{width:min(880px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:26px;box-shadow:0 24px 70px rgba(0,0,0,.25)}
-    .modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:22px 24px;border-bottom:1px solid #edf1f4}
-    .modal-body{padding:24px;display:grid;gap:18px}
-    .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-    .field{display:grid;gap:6px}
-    .field label{font-size:12px;color:var(--ink-soft);letter-spacing:.08em;text-transform:uppercase;font-weight:800}
-    .field.full{grid-column:1 / -1}
-    .modal-actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-    .toast{position:fixed;right:18px;bottom:18px;background:#102033;color:#fff;padding:12px 16px;border-radius:14px;box-shadow:var(--shadow);display:none;z-index:50}
-    @media (max-width:1120px){.hero,.stats,.toolbar{grid-template-columns:1fr}.hero-points{grid-template-columns:1fr}}
-    @media (max-width:760px){.shell{width:min(100% - 18px,1480px)}.topbar-inner{display:grid}.form-grid{grid-template-columns:1fr}.modal-body,.hero-copy,.hero-side{padding:18px}}
-  </style>
-</head>
-<body>
-  <header class="topbar"><div class="shell topbar-inner"><a class="brand" href="/"><span class="brand-badge">P</span><span><strong>PrimeWeb CRM</strong><span>Lead-Dashboard</span></span></a><div class="topbar-actions"><span class="sync" id="syncLabel">Bereit</span><button class="btn btn-secondary" type="button" id="importBtn">Import</button><button class="btn btn-secondary" type="button" id="exportBtn">Export</button><button class="btn btn-primary" type="button" id="addBtn">Lead hinzuf&uuml;gen</button><input type="file" id="importFile" accept=".json" hidden></div></div></header>
-  <div class="shell">
-    <section class="hero"><div class="panel hero-copy"><div class="eyebrow">PrimeWeb Workflow</div><h1>Website-Anfragen und Research-Leads an einem Ort.</h1><p>Dieses Dashboard arbeitet jetzt &uuml;ber eine lokale API. Neue Leads von der Website und importierte Research-Daten landen zentral in derselben Datenbasis.</p><div class="hero-points"><div><strong id="heroTotal">0</strong><span>Leads gesamt</span></div><div><strong id="heroInbound">0</strong><span>Website- oder Inbound-Leads</span></div><div><strong id="heroOpen">0</strong><span>offene oder aktive Chancen</span></div></div></div><aside class="panel hero-side"><div class="eyebrow" style="background:rgba(16,32,51,.06);color:var(--ink-soft);">So nutzt du es</div><h2>Empfohlener Ablauf</h2><p>Inbound kommt &uuml;ber die Website, Outbound und Leadbot-Recherche &uuml;ber Import oder API. Danach pflegst du Priorit&auml;t, Paket, Status und n&auml;chsten Schritt.</p><ul class="tips"><li>Website-Anfragen werden als Quelle <strong>Website</strong> gespeichert.</li><li>Research-Leads kannst du per API oder Import zusammenf&uuml;hren.</li><li>Exportiere regelm&auml;&szlig;ig eine JSON-Sicherung.</li></ul></aside></section>
-    <section class="stats"><div class="panel stat"><div class="stat-label">Leads gesamt</div><div class="stat-value" id="sTotal">0</div></div><div class="panel stat"><div class="stat-label">Priorit&auml;t hoch</div><div class="stat-value" id="sHigh">0</div></div><div class="panel stat"><div class="stat-label">Aktive Chancen</div><div class="stat-value" id="sActive">0</div></div><div class="panel stat"><div class="stat-label">Abgeschlossen</div><div class="stat-value" id="sWon">0</div></div><div class="panel stat"><div class="stat-label">Pipeline-Wert</div><div class="stat-value" id="sValue">0 EUR</div></div></section>
-    <section class="toolbar"><input id="searchInput" type="text" placeholder="Suche nach Firma, Ort, Branche, Notiz oder Kontakt"><select id="prioFilter"><option value="">Alle Priorit&auml;ten</option><option value="HOCH">HOCH</option><option value="MITTEL">MITTEL</option><option value="NIEDRIG">NIEDRIG</option></select><select id="statusFilter"><option value="">Alle Status</option><option value="Offen">Offen</option><option value="Kontaktiert">Kontaktiert</option><option value="Im Gespr&auml;ch">Im Gespr&auml;ch</option><option value="Abgeschlossen">Abgeschlossen</option><option value="Abgelehnt">Abgelehnt</option></select><select id="sourceFilter"><option value="">Alle Quellen</option></select><button class="btn btn-secondary" type="button" id="seedBtn">Beispiel-Lead</button><button class="btn btn-secondary" type="button" id="clearFiltersBtn">Filter leeren</button><a class="btn btn-secondary" href="/">Zur Website</a></section>
-    <section class="table-wrap"><table><thead><tr><th>Prio</th><th>Firma &amp; Kontakt</th><th>Ort / Branche</th><th>Website</th><th>Telefon</th><th>E-Mail</th><th>Bedarf &amp; n&auml;chster Schritt</th><th>Wert &amp; Follow-up</th><th>Status</th><th>Aktion</th></tr></thead><tbody id="rows"></tbody></table><div class="empty" id="emptyState" hidden>Keine Leads gefunden.</div></section>
-  </div>
-  <div class="overlay" id="overlay"><div class="modal"><div class="modal-head"><div><h2 id="modalTitle">Lead bearbeiten</h2><p class="muted">Manuelle Pflege f&uuml;r Website- und Outbound-Leads.</p></div><button class="btn btn-secondary" type="button" id="closeModalBtn">Schlie&szlig;en</button></div><div class="modal-body"><div class="form-grid"><div class="field"><label for="f-firma">Firma / Name</label><input id="f-firma" type="text"></div><div class="field"><label for="f-ort">Ort</label><input id="f-ort" type="text"></div><div class="field"><label for="f-branche">Branche</label><input id="f-branche" type="text"></div><div class="field"><label for="f-source">Quelle</label><select id="f-source"><option value="Website">Website</option><option value="Outbound">Outbound</option><option value="Research">Research</option><option value="Empfehlung">Empfehlung</option><option value="Sonstiges">Sonstiges</option></select></div><div class="field"><label for="f-email">E-Mail</label><input id="f-email" type="email"></div><div class="field"><label for="f-tel">Telefon</label><input id="f-tel" type="text"></div><div class="field"><label for="f-whatsapp">WhatsApp</label><input id="f-whatsapp" type="text"></div><div class="field"><label for="f-followUpAt">Follow-up</label><input id="f-followUpAt" type="datetime-local"></div><div class="field full"><label for="f-contactNames">Ansprechpartner</label><input id="f-contactNames" type="text"></div><div class="field full"><label for="f-website">Website</label><input id="f-website" type="text" placeholder="https://..."></div><div class="field full"><label for="f-sourceUrl">Quellseite</label><input id="f-sourceUrl" type="text" placeholder="https://..."></div><div class="field"><label for="f-paket">Paket</label><select id="f-paket"><option value="Landing Page">Landing Page</option><option value="Business">Business</option><option value="Erweitertes Paket">Erweitertes Paket</option><option value="Online-Shop">Online-Shop</option><option value="Wartung">Wartung</option><option value="Beratung">Beratung</option></select></div><div class="field"><label for="f-preis">Wert in EUR</label><input id="f-preis" type="number" min="0" step="1"></div><div class="field"><label for="f-prio">Priorit&auml;t</label><select id="f-prio"><option value="HOCH">HOCH</option><option value="MITTEL">MITTEL</option><option value="NIEDRIG">NIEDRIG</option></select></div><div class="field"><label for="f-status">Status</label><select id="f-status"><option value="Offen">Offen</option><option value="Kontaktiert">Kontaktiert</option><option value="Im Gespr&auml;ch">Im Gespr&auml;ch</option><option value="Abgeschlossen">Abgeschlossen</option><option value="Abgelehnt">Abgelehnt</option></select></div><div class="field full"><label for="f-problem">Problem / Anlass</label><textarea id="f-problem"></textarea></div><div class="field full"><label for="f-outreachSuggestion">N&auml;chster Schritt</label><textarea id="f-outreachSuggestion"></textarea></div><div class="field full"><label for="f-notiz">Notiz</label><textarea id="f-notiz"></textarea></div></div><div class="modal-actions"><button class="btn btn-danger" type="button" id="deleteBtn">L&ouml;schen</button><div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="btn btn-secondary" type="button" id="cancelBtn">Abbrechen</button><button class="btn btn-primary" type="button" id="saveBtn">Speichern</button></div></div></div></div></div>
-  <div class="toast" id="toast"></div>
-  <script src="./app.js"></script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrimeWeb CRM | Lead-Dashboard</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Syne:wght@700;800&display=swap">
+  <style>
+    :root { --ink:#102033; --ink-soft:#5a6c81; --panel:#ffffff; --accent:#c46b2d; --accent-dark:#9f511d; --success:#2d8a58; --warn:#b86d1e; --danger:#c53d3d; --blue:#2f62d6; --shadow:0 16px 40px rgba(16,32,51,0.08); }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Manrope",sans-serif;color:var(--ink);background:radial-gradient(circle at top left, rgba(196,107,45,.12), transparent 24%),linear-gradient(180deg,#eef2f5 0%,#f7f8fa 100%);min-height:100vh}
+    button,input,select,textarea{font:inherit}
+    a{text-decoration:none;color:inherit}
+    .shell{width:min(1480px,calc(100% - 28px));margin:0 auto}
+    .topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(255,255,255,.86);border-bottom:1px solid rgba(16,32,51,.08)}
+    .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-badge{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,#102033,#294b71);color:#f2c46d;font-family:"Syne",sans-serif;font-size:22px}
+    .brand strong{display:block;font-size:18px;letter-spacing:-.03em}
+    .brand span span{display:block;color:var(--ink-soft);font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:800}
+    .topbar-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .sync{font-size:12px;color:var(--ink-soft);padding:10px 14px;border-radius:999px;background:rgba(16,32,51,.05)}
+    .btn{border:0;min-height:44px;padding:0 18px;border-radius:999px;font-weight:800;cursor:pointer;transition:.18s ease}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-primary:hover{background:var(--accent-dark)}
+    .btn-secondary{background:#fff;color:var(--ink);border:1px solid rgba(16,32,51,.12)}
+    .btn-secondary:hover{background:#f7f8fa}
+    .btn-danger{background:rgba(197,61,61,.1);color:var(--danger)}
+    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;padding:24px 0 18px}
+    .panel{background:var(--panel);border:1px solid rgba(16,32,51,.08);border-radius:24px;box-shadow:var(--shadow)}
+    .hero-copy{padding:28px;background:linear-gradient(145deg,#102033,#284969);color:#fff}
+    .eyebrow{display:inline-flex;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.84);font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;margin-bottom:14px}
+    h1,h2,h3{font-family:"Syne",sans-serif;letter-spacing:-.04em;line-height:1.04}
+    h1{font-size:clamp(34px,4vw,52px);margin-bottom:14px}
+    .hero-copy p{color:rgba(255,255,255,.76);max-width:58ch}
+    .hero-points{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+    .hero-points div{padding:14px;border-radius:18px;background:rgba(255,255,255,.08)}
+    .hero-points strong{display:block;font-size:24px;color:#f2c46d}
+    .hero-points span{font-size:13px;color:rgba(255,255,255,.72)}
+    .hero-side{padding:24px}
+    .hero-side p,.tips li,.muted{color:var(--ink-soft)}
+    .tips{display:grid;gap:10px;margin-top:18px;list-style:none}
+    .tips li{padding:12px 14px;border-radius:16px;background:rgba(16,32,51,.04)}
+    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:4px 0 18px}
+    .stat{padding:20px}
+    .stat-label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:800;margin-bottom:10px}
+    .stat-value{font-size:28px;font-weight:800;letter-spacing:-.04em}
+    .toolbar{display:grid;grid-template-columns:1.2fr repeat(3,.8fr) auto auto auto;gap:10px;align-items:center;margin-bottom:18px}
+    .toolbar input,.toolbar select,textarea,.field input,.field select{width:100%;min-height:46px;padding:12px 14px;border-radius:14px;border:1px solid rgba(16,32,51,.12);background:#fff;color:var(--ink);outline:none}
+    textarea{min-height:110px;resize:vertical}
+    .toolbar input:focus,.toolbar select:focus,.field input:focus,.field select:focus,textarea:focus{border-color:rgba(196,107,45,.6);box-shadow:0 0 0 4px rgba(196,107,45,.12)}
+    .table-wrap{overflow:auto;border-radius:22px;background:#fff;border:1px solid rgba(16,32,51,.08);box-shadow:var(--shadow)}
+    table{width:100%;border-collapse:collapse;min-width:1460px}
+    th,td{text-align:left;padding:14px;border-bottom:1px solid #edf1f4;vertical-align:top;font-size:14px}
+    th{position:sticky;top:0;z-index:1;background:#f7f9fb;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em;font-size:11px}
+    tbody tr:hover{background:#fbfcfd}
+    .company{font-weight:800;color:var(--ink);margin-bottom:4px}
+    .badge{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.04em;white-space:nowrap}
+    .prio-HOCH{background:rgba(197,61,61,.12);color:var(--danger)}
+    .prio-MITTEL{background:rgba(184,109,30,.12);color:var(--warn)}
+    .prio-NIEDRIG{background:rgba(45,138,88,.12);color:var(--success)}
+    .status-Offen{background:rgba(47,98,214,.12);color:var(--blue)}
+    .status-Kontaktiert{background:rgba(184,109,30,.12);color:var(--warn)}
+    .status-Im-Gespraech{background:rgba(45,138,88,.12);color:var(--success)}
+    .status-Abgeschlossen{background:rgba(45,138,88,.18);color:#16603a}
+    .status-Abgelehnt{background:rgba(197,61,61,.12);color:var(--danger)}
+    .row-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .text-btn{border:0;background:transparent;color:var(--blue);cursor:pointer;font-weight:800}
+    .quick-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .quick-link{display:inline-flex;align-items:center;min-height:32px;padding:0 10px;border-radius:999px;background:rgba(47,98,214,.1);color:var(--blue);font-size:12px;font-weight:800}
+    .quick-link.alt{background:rgba(16,32,51,.07);color:var(--ink-soft)}
+    .contact-list{display:grid;gap:4px}
+    .empty{padding:44px 18px;text-align:center;color:var(--ink-soft)}
+    .overlay{position:fixed;inset:0;background:rgba(10,18,28,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:40}
+    .overlay.open{display:flex}
+    .modal{width:min(880px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:26px;box-shadow:0 24px 70px rgba(0,0,0,.25)}
+    .modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:22px 24px;border-bottom:1px solid #edf1f4}
+    .modal-body{padding:24px;display:grid;gap:18px}
+    .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .field{display:grid;gap:6px}
+    .field label{font-size:12px;color:var(--ink-soft);letter-spacing:.08em;text-transform:uppercase;font-weight:800}
+    .field.full{grid-column:1 / -1}
+    .modal-actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .toast{position:fixed;right:18px;bottom:18px;background:#102033;color:#fff;padding:12px 16px;border-radius:14px;box-shadow:var(--shadow);display:none;z-index:50}
+    @media (max-width:1120px){.hero,.stats,.toolbar{grid-template-columns:1fr}.hero-points{grid-template-columns:1fr}}
+    @media (max-width:760px){.shell{width:min(100% - 18px,1480px)}.topbar-inner{display:grid}.form-grid{grid-template-columns:1fr}.modal-body,.hero-copy,.hero-side{padding:18px}}
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="shell topbar-inner"><a class="brand" href="/"><span class="brand-badge">P</span><span><strong>PrimeWeb CRM</strong><span>Lead-Dashboard</span></span></a><div class="topbar-actions"><span class="sync" id="syncLabel">Bereit</span><button class="btn btn-secondary" type="button" id="importBtn">Import</button><button class="btn btn-secondary" type="button" id="exportBtn">Export</button><button class="btn btn-primary" type="button" id="addBtn">Lead hinzuf&uuml;gen</button><input type="file" id="importFile" accept=".json" hidden></div></div></header>
+  <div class="shell">
+    <section class="hero"><div class="panel hero-copy"><div class="eyebrow">PrimeWeb Workflow</div><h1>Website-Anfragen und Research-Leads an einem Ort.</h1><p>Dieses Dashboard arbeitet jetzt &uuml;ber eine lokale API. Neue Leads von der Website und importierte Research-Daten landen zentral in derselben Datenbasis.</p><div class="hero-points"><div><strong id="heroTotal">0</strong><span>Leads gesamt</span></div><div><strong id="heroInbound">0</strong><span>Website- oder Inbound-Leads</span></div><div><strong id="heroOpen">0</strong><span>offene oder aktive Chancen</span></div></div></div><aside class="panel hero-side"><div class="eyebrow" style="background:rgba(16,32,51,.06);color:var(--ink-soft);">So nutzt du es</div><h2>Empfohlener Ablauf</h2><p>Inbound kommt &uuml;ber die Website, Outbound und Leadbot-Recherche &uuml;ber Import oder API. Danach pflegst du Priorit&auml;t, Paket, Status und n&auml;chsten Schritt.</p><ul class="tips"><li>Website-Anfragen werden als Quelle <strong>Website</strong> gespeichert.</li><li>Research-Leads kannst du per API oder Import zusammenf&uuml;hren.</li><li>Exportiere regelm&auml;&szlig;ig eine JSON-Sicherung.</li></ul></aside></section>
+    <section class="stats"><div class="panel stat"><div class="stat-label">Leads gesamt</div><div class="stat-value" id="sTotal">0</div></div><div class="panel stat"><div class="stat-label">Priorit&auml;t hoch</div><div class="stat-value" id="sHigh">0</div></div><div class="panel stat"><div class="stat-label">Aktive Chancen</div><div class="stat-value" id="sActive">0</div></div><div class="panel stat"><div class="stat-label">Abgeschlossen</div><div class="stat-value" id="sWon">0</div></div><div class="panel stat"><div class="stat-label">Pipeline-Wert</div><div class="stat-value" id="sValue">0 EUR</div></div></section>
+    <section class="toolbar"><input id="searchInput" type="text" placeholder="Suche nach Firma, Ort, Branche, Notiz oder Kontakt"><select id="prioFilter"><option value="">Alle Priorit&auml;ten</option><option value="HOCH">HOCH</option><option value="MITTEL">MITTEL</option><option value="NIEDRIG">NIEDRIG</option></select><select id="statusFilter"><option value="">Alle Status</option><option value="Offen">Offen</option><option value="Kontaktiert">Kontaktiert</option><option value="Im Gespr&auml;ch">Im Gespr&auml;ch</option><option value="Abgeschlossen">Abgeschlossen</option><option value="Abgelehnt">Abgelehnt</option></select><select id="sourceFilter"><option value="">Alle Quellen</option></select><button class="btn btn-secondary" type="button" id="seedBtn">Beispiel-Lead</button><button class="btn btn-secondary" type="button" id="clearFiltersBtn">Filter leeren</button><a class="btn btn-secondary" href="/">Zur Website</a></section>
+    <section class="table-wrap"><table><thead><tr><th>Prio</th><th>Firma &amp; Kontakt</th><th>Ort / Branche</th><th>Website</th><th>Kontakt &amp; E-Mail</th><th>Bedarf &amp; n&auml;chster Schritt</th><th>Wert &amp; Follow-up</th><th>Status</th><th>Aktion</th></tr></thead><tbody id="rows"></tbody></table><div class="empty" id="emptyState" hidden>Keine Leads gefunden.</div></section>
+  </div>
+  <div class="overlay" id="overlay"><div class="modal"><div class="modal-head"><div><h2 id="modalTitle">Lead bearbeiten</h2><p class="muted">Manuelle Pflege f&uuml;r Website- und Outbound-Leads.</p></div><button class="btn btn-secondary" type="button" id="closeModalBtn">Schlie&szlig;en</button></div><div class="modal-body"><div class="form-grid"><div class="field"><label for="f-firma">Firma / Name</label><input id="f-firma" type="text"></div><div class="field"><label for="f-ort">Ort</label><input id="f-ort" type="text"></div><div class="field"><label for="f-branche">Branche</label><input id="f-branche" type="text"></div><div class="field"><label for="f-source">Quelle</label><select id="f-source"><option value="Website">Website</option><option value="Outbound">Outbound</option><option value="Research">Research</option><option value="Empfehlung">Empfehlung</option><option value="Sonstiges">Sonstiges</option></select></div><div class="field"><label for="f-email">E-Mail</label><input id="f-email" type="email"></div><div class="field"><label for="f-tel">Telefon</label><input id="f-tel" type="text"></div><div class="field"><label for="f-whatsapp">WhatsApp</label><input id="f-whatsapp" type="text"></div><div class="field"><label for="f-followUpAt">Follow-up</label><input id="f-followUpAt" type="datetime-local"></div><div class="field full"><label for="f-contactNames">Ansprechpartner</label><input id="f-contactNames" type="text"></div><div class="field full"><label for="f-website">Website</label><input id="f-website" type="text" placeholder="https://..."></div><div class="field full"><label for="f-sourceUrl">Quellseite</label><input id="f-sourceUrl" type="text" placeholder="https://..."></div><div class="field"><label for="f-paket">Paket</label><select id="f-paket"><option value="Landing Page">Landing Page</option><option value="Business">Business</option><option value="Erweitertes Paket">Erweitertes Paket</option><option value="Online-Shop">Online-Shop</option><option value="Wartung">Wartung</option><option value="Beratung">Beratung</option></select></div><div class="field"><label for="f-preis">Wert in EUR</label><input id="f-preis" type="number" min="0" step="1"></div><div class="field"><label for="f-prio">Priorit&auml;t</label><select id="f-prio"><option value="HOCH">HOCH</option><option value="MITTEL">MITTEL</option><option value="NIEDRIG">NIEDRIG</option></select></div><div class="field"><label for="f-status">Status</label><select id="f-status"><option value="Offen">Offen</option><option value="Kontaktiert">Kontaktiert</option><option value="Im Gespr&auml;ch">Im Gespr&auml;ch</option><option value="Abgeschlossen">Abgeschlossen</option><option value="Abgelehnt">Abgelehnt</option></select></div><div class="field full"><label for="f-problem">Problem / Anlass</label><textarea id="f-problem"></textarea></div><div class="field full"><label for="f-outreachSuggestion">N&auml;chster Schritt</label><textarea id="f-outreachSuggestion"></textarea></div><div class="field full"><label for="f-notiz">Notiz</label><textarea id="f-notiz"></textarea></div></div><div class="modal-actions"><button class="btn btn-danger" type="button" id="deleteBtn">L&ouml;schen</button><div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="btn btn-secondary" type="button" id="cancelBtn">Abbrechen</button><button class="btn btn-primary" type="button" id="saveBtn">Speichern</button></div></div></div></div></div>
+  <div class="toast" id="toast"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
