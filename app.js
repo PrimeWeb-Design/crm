@@ -186,20 +186,33 @@ function updateSourceFilter() {
   els.sourceFilter.innerHTML = values.map((value) => `<option value="${esc(value)}"${value === current ? " selected" : ""}>${value || "Alle Quellen"}</option>`).join("");
 }
 
-function updateStats() {
-  const inbound = leads.filter((lead) => (lead.source || "").toLowerCase() === "website").length;
-  const active = leads.filter((lead) => !["Abgeschlossen", "Abgelehnt"].includes(lead.status)).length;
-  const high = leads.filter((lead) => lead.prio === "HOCH").length;
-  const won = leads.filter((lead) => lead.status === "Abgeschlossen").length;
-  const value = leads.filter((lead) => lead.status !== "Abgelehnt").reduce((sum, lead) => sum + (Number(lead.preis) || 0), 0);
-  els.heroTotal.textContent = leads.length;
-  els.heroInbound.textContent = inbound;
-  els.heroOpen.textContent = active;
-  els.sTotal.textContent = leads.length;
-  els.sHigh.textContent = high;
-  els.sActive.textContent = active;
-  els.sWon.textContent = won;
-  els.sValue.textContent = value.toLocaleString("de-DE") + " EUR";
+async function updateStats() {
+  try {
+    const s = await api("/stats");
+    els.heroTotal.textContent = s.total.toLocaleString("de-DE");
+    els.heroInbound.textContent = s.inbound.toLocaleString("de-DE");
+    els.heroOpen.textContent = s.active.toLocaleString("de-DE");
+    els.sTotal.textContent = s.total.toLocaleString("de-DE");
+    els.sHigh.textContent = s.high.toLocaleString("de-DE");
+    els.sActive.textContent = s.active.toLocaleString("de-DE");
+    els.sWon.textContent = s.won.toLocaleString("de-DE");
+    els.sValue.textContent = Math.round(s.value).toLocaleString("de-DE") + " EUR";
+  } catch (_e) {
+    // Fallback auf Seitenwerte
+    const inbound = leads.filter((lead) => (lead.source || "").toLowerCase() === "website").length;
+    const active = leads.filter((lead) => !["Abgeschlossen", "Abgelehnt"].includes(lead.status)).length;
+    const high = leads.filter((lead) => lead.prio === "HOCH").length;
+    const won = leads.filter((lead) => lead.status === "Abgeschlossen").length;
+    const value = leads.filter((lead) => lead.status !== "Abgelehnt").reduce((sum, lead) => sum + (Number(lead.preis) || 0), 0);
+    els.heroTotal.textContent = totalLeads.toLocaleString("de-DE");
+    els.heroInbound.textContent = inbound;
+    els.heroOpen.textContent = active;
+    els.sTotal.textContent = totalLeads.toLocaleString("de-DE");
+    els.sHigh.textContent = high;
+    els.sActive.textContent = active;
+    els.sWon.textContent = won;
+    els.sValue.textContent = value.toLocaleString("de-DE") + " EUR";
+  }
 }
 
 function updatePagination() {
@@ -216,7 +229,7 @@ function updatePagination() {
 function render() {
   updatePagination();
   updateSourceFilter();
-  updateStats();
+  updateStats(); // async, fire-and-forget — UI-Update erfolgt sobald Antwort kommt
   const rows = getFilteredLeads();
   els.rows.innerHTML = rows.map((lead) => {
     const websiteCell = lead.website
