@@ -253,9 +253,10 @@ function render() {
       whatsappDigits ? `<a class="quick-link alt" href="https://wa.me/${esc(whatsappDigits)}" target="_blank" rel="noreferrer">WhatsApp</a>` : ""
     ].filter(Boolean).join("");
 
-    const websiteBtn = lead.website
-      ? `<a class="text-btn" href="${esc(lead.website)}" target="_blank" rel="noreferrer">Website</a>`
-      : (lead.sourceUrl ? `<a class="text-btn" href="${esc(lead.sourceUrl)}" target="_blank" rel="noreferrer">Quelle</a>` : "");
+    const websiteUrl = lead.website || lead.sourceUrl || "";
+    const websiteBtn = websiteUrl
+      ? `<a class="quick-link" href="${esc(websiteUrl)}" target="_blank" rel="noreferrer" style="background:rgba(196,107,45,.12);color:var(--accent);">&#127760; Webseite</a>`
+      : "";
 
     return `<tr>
       <td><span class="badge prio-${esc(lead.prio)}">${esc(lead.prio)}</span></td>
