@@ -233,7 +233,7 @@ function render() {
   const rows = getFilteredLeads();
   els.rows.innerHTML = rows.map((lead) => {
     const websiteCell = lead.website
-      ? `<a href="${esc(lead.website)}" target="_blank" rel="noreferrer">Oeffnen</a>`
+      ? `<a href="${esc(lead.website)}" target="_blank" rel="noreferrer">&#214;ffnen</a>`
       : (lead.sourceUrl ? `<a href="${esc(lead.sourceUrl)}" target="_blank" rel="noreferrer">Quelle</a>` : '<span class="muted">Keine</span>');
     const emailValues = [lead.email, ...lead.contacts.map((contact) => contact.email)].filter(Boolean);
     const phoneValues = [lead.tel, lead.whatsapp, ...lead.contacts.map((contact) => contact.phone)].filter(Boolean);
@@ -242,29 +242,36 @@ function render() {
     const hint = [lead.problem, lead.researchStatus, lead.contactability, lead.outreachSuggestion].filter(Boolean).join(" | ") || "-";
     const contactTooltip = [lead.contactNames, ...lead.contacts.slice(0, 5).map((contact) => [contact.name, contact.role, contact.email, contact.phone].filter(Boolean).join(" | "))].filter(Boolean).join("\n");
     const emailList = uniqueEmails.length
-      ? `<div class="contact-list">${uniqueEmails.slice(0, 4).map((value) => `<div>${esc(value)}</div>`).join("")}</div>`
-      : `<span class="muted">Keine E-Mail</span>`;
+      ? `<div class="contact-list">${uniqueEmails.slice(0, 4).map((value) => `<div><a href="mailto:${esc(value)}" style="color:var(--blue)">${esc(value)}</a></div>`).join("")}</div>`
+      : `<span class="muted">–</span>`;
     const phoneList = uniquePhones.length
-      ? `<div class="contact-list">${uniquePhones.slice(0, 4).map((value) => `<div>${esc(value)}</div>`).join("")}</div>`
-      : `<span class="muted">Keine Nummer</span>`;
+      ? `<div class="contact-list">${uniquePhones.slice(0, 4).map((value) => `<div><a href="tel:${esc(value)}" style="color:var(--ink)">${esc(value)}</a></div>`).join("")}</div>`
+      : `<span class="muted">–</span>`;
     const whatsappRaw = lead.whatsapp || uniquePhones[0] || "";
     const whatsappDigits = String(whatsappRaw).replace(/\D/g, "");
     const quickLinks = [
-      uniqueEmails[0] ? `<a class="quick-link" href="mailto:${esc(uniqueEmails[0])}">E-Mail senden</a>` : "",
-      uniquePhones[0] ? `<a class="quick-link alt" href="tel:${esc(uniquePhones[0])}">Anrufen</a>` : "",
       whatsappDigits ? `<a class="quick-link alt" href="https://wa.me/${esc(whatsappDigits)}" target="_blank" rel="noreferrer">WhatsApp</a>` : ""
     ].filter(Boolean).join("");
+
+    const websiteBtn = lead.website
+      ? `<a class="text-btn" href="${esc(lead.website)}" target="_blank" rel="noreferrer">Website</a>`
+      : (lead.sourceUrl ? `<a class="text-btn" href="${esc(lead.sourceUrl)}" target="_blank" rel="noreferrer">Quelle</a>` : "");
 
     return `<tr>
       <td><span class="badge prio-${esc(lead.prio)}">${esc(lead.prio)}</span></td>
       <td title="${esc(contactTooltip)}"><div class="company">${esc(lead.firma || "Unbenannter Lead")}</div><div class="muted">${esc(lead.contactNames || lead.source || "-")}</div></td>
       <td><div>${esc(lead.ort || "-")}</div><div class="muted">${esc(lead.branche || "-")}</div></td>
-      <td><div>${websiteCell}</div>${lead.sourceUrl ? `<div class="muted" style="margin-top:6px;">${esc(lead.sourceUrl)}</div>` : ""}</td>
-      <td><div style="margin-bottom:8px;">${emailList}</div><div>${phoneList}</div><div class="quick-links">${quickLinks}</div></td>
+      <td><div style="margin-bottom:6px;">${websiteCell}</div>${lead.sourceUrl && lead.website ? `<div><a href="${esc(lead.sourceUrl)}" target="_blank" rel="noreferrer" style="font-size:12px;color:var(--ink-soft)">Quelle</a></div>` : ""}</td>
+      <td>
+        ${lead.contactNames ? `<div style="font-weight:700;margin-bottom:6px;">${esc(lead.contactNames)}</div>` : ""}
+        <div style="margin-bottom:6px;">${emailList}</div>
+        <div style="margin-bottom:6px;">${phoneList}</div>
+        ${quickLinks ? `<div class="quick-links">${quickLinks}</div>` : ""}
+      </td>
       <td class="muted">${esc(hint)}</td>
       <td><div>${esc(lead.paket || "-")}</div><div class="muted">${(Number(lead.preis) || 0).toLocaleString("de-DE")} EUR</div><div class="muted" style="margin-top:6px;">Follow-up: ${formatFollowUp(lead.followUpAt)}</div></td>
       <td><span class="badge ${statusClass(lead.status)}">${esc(lead.status)}</span></td>
-      <td><div class="row-actions"><button class="text-btn" type="button" onclick="window.editLead('${String(lead.id)}')">Bearbeiten</button><button class="text-btn" type="button" onclick="window.quickAdvance('${String(lead.id)}')">Weiter</button></div></td>
+      <td><div class="row-actions"><button class="text-btn" type="button" onclick="window.editLead('${String(lead.id)}')">Bearbeiten</button><button class="text-btn" type="button" onclick="window.quickAdvance('${String(lead.id)}')">Weiter</button>${websiteBtn}</div></td>
     </tr>`;
   }).join("");
   els.emptyState.hidden = rows.length > 0;
