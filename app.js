@@ -53,10 +53,7 @@ const els = {
   sHigh: document.getElementById("sHigh"),
   sActive: document.getElementById("sActive"),
   sWon: document.getElementById("sWon"),
-  sValue: document.getElementById("sValue"),
-  paginationInfo: document.getElementById("paginationInfo"),
-  prevBtn: document.getElementById("prevBtn"),
-  nextBtn: document.getElementById("nextBtn")
+  sValue: document.getElementById("sValue")
 };
 
 const fields = [
@@ -208,15 +205,18 @@ function updateStats() {
 function updatePagination() {
   const from = totalLeads === 0 ? 0 : currentOffset + 1;
   const to = Math.min(currentOffset + PAGE_SIZE, totalLeads);
-  els.paginationInfo.textContent = `Zeige ${from}–${to} von ${totalLeads.toLocaleString("de-DE")} Leads`;
-  els.prevBtn.disabled = currentOffset === 0;
-  els.nextBtn.disabled = currentOffset + PAGE_SIZE >= totalLeads;
+  const info = document.getElementById("paginationInfo");
+  const prev = document.getElementById("prevBtn");
+  const next = document.getElementById("nextBtn");
+  if (info) info.textContent = `Zeige ${from}–${to} von ${totalLeads.toLocaleString("de-DE")} Leads`;
+  if (prev) prev.disabled = currentOffset === 0;
+  if (next) next.disabled = currentOffset + PAGE_SIZE >= totalLeads;
 }
 
 function render() {
+  updatePagination();
   updateSourceFilter();
   updateStats();
-  updatePagination();
   const rows = getFilteredLeads();
   els.rows.innerHTML = rows.map((lead) => {
     const websiteCell = lead.website
@@ -441,13 +441,13 @@ async function bootstrap() {
     element.addEventListener("input", render);
     element.addEventListener("change", render);
   });
-  els.prevBtn.addEventListener("click", async () => {
-    const newOffset = Math.max(0, currentOffset - PAGE_SIZE);
-    try { await load({ offset: newOffset, q: els.searchInput.value.trim() }); render(); } catch (_e) {}
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  if (prevBtn) prevBtn.addEventListener("click", async () => {
+    try { await load({ offset: Math.max(0, currentOffset - PAGE_SIZE), q: els.searchInput.value.trim() }); render(); } catch (_e) {}
   });
-  els.nextBtn.addEventListener("click", async () => {
-    const newOffset = currentOffset + PAGE_SIZE;
-    try { await load({ offset: newOffset, q: els.searchInput.value.trim() }); render(); } catch (_e) {}
+  if (nextBtn) nextBtn.addEventListener("click", async () => {
+    try { await load({ offset: currentOffset + PAGE_SIZE, q: els.searchInput.value.trim() }); render(); } catch (_e) {}
   });
   els.overlay.addEventListener("click", (event) => {
     if (event.target === els.overlay) closeModal();
